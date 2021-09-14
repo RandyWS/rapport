@@ -10,11 +10,11 @@ export const setUser = (user) => {
   };
 };
 
-export const fetchUser = (userId) => {
+export const fetchUser = (username) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/user/${userId}`);
-      dispatch(setUser(data));
+      const { data } = await axios.get(`/api/user/authenticated/${username}`);
+      dispatch(setUser(data.user));
     } catch (error) {
       console.log(error);
     }
@@ -27,7 +27,8 @@ export const _fetchUser = (username, history) => {
       const { data } = await axios.get(`/api/user/authenticated/${username}`);
       dispatch(setUser(data.user));
       dispatch(setUserFriends(data.user.friends));
-      history.push(`/`);
+      const path = `/user/${data.user.userName}`;
+      history.push(path);
     } catch (error) {
       console.log(error);
     }

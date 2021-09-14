@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchUser, setUser } from "../redux/user";
+import { setUser } from "../redux/user";
 import User from "./user";
 import { FriendsList } from "./FriendsList";
+import { Link } from "react-router-dom";
+import { _fetchUser } from "../redux/user";
 
 class UserPage extends Component {
-  _isMounted = false;
   constructor() {
     super();
     this.state = {
@@ -15,35 +16,34 @@ class UserPage extends Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
+    this.props.fetchUser(this.props.match.params.userName);
   }
 
   componentWillUnmount() {
     this.props.clearUser();
-    this._isMounted = false;
   }
 
   componentDidUpdate(prevProps) {
-    if (this._isMounted) {
-      if (prevProps.user !== this.props.user) {
-        this.setState({
-          user: this.props.user,
-        });
-      }
-      if (prevProps.userFriends !== this.props.userFriends) {
-        this.setState({
-          userFriends: this.props.userFriends,
-        });
-      }
+    if (prevProps.user !== this.props.user) {
+      this.setState({
+        user: this.props.user,
+      });
+    }
+    if (prevProps.userFriends !== this.props.userFriends) {
+      this.setState({
+        userFriends: this.props.userFriends,
+      });
     }
   }
 
   render() {
     const user = { ...this.props.user } || {};
     const friends = this.state.userFriends || [];
+    const path = `/user/${this.props.match.params.userName}/calendar`;
 
     return (
       <div>
+        <Link to={path}>Go to Calendar</Link>
         <div>{user.id ? <User user={user} /> : null}</div>
         {!friends.length ? (
           <h4>You have no friends!</h4>
@@ -62,12 +62,14 @@ const mapStateToProps = (state) => {
   return {
     user: state.user,
     userFriends: state.userFriends,
+    loggedIn: state.loggedIn,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, { history }) => {
   return {
     clearUser: () => dispatch(setUser({})),
+    fetchUser: (username) => dispatch(_fetchUser(username, history)),
   };
 };
 

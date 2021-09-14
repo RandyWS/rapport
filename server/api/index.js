@@ -3,6 +3,7 @@
 const router = require("express").Router();
 
 router.use("/user", require("./user"));
+router.use("/contacts", require("./contacts"));
 router.use("/friends", require("./friends"));
 
 router.use((req, res, next) => {

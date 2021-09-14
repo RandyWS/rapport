@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import UserPage from "./UserPage";
 import LogIn from "./LogIn";
+import { Redirect } from "react-router-dom";
 
 class Home extends Component {
   constructor() {
@@ -9,6 +10,7 @@ class Home extends Component {
     this.state = {
       loggedIn: false,
       message: "",
+      user: {},
     };
   }
 
@@ -19,16 +21,12 @@ class Home extends Component {
         message: this.props.message,
       });
     }
+    if (prevProps.user !== this.props.user) {
+      this.setState({
+        user: this.props.user,
+      });
+    }
   }
-
-  // This logs us out by calling the backend
-  // to destroy the session
-  // logout = async () => {
-  //   const response = await fetch("/logout");
-  //   const result = await response.json();
-  //   setLoggedIn(result.loggedIn);
-  //   setMessage(result.message);
-  // };
 
   // This is doing a sample authenticated call
   // if this call fails, we are not logged in
@@ -47,6 +45,7 @@ class Home extends Component {
 
   render() {
     const loggedIn = this.state.loggedIn;
+    const path = `/user/${this.props.user.userName}`;
 
     return (
       <div>
@@ -56,7 +55,7 @@ class Home extends Component {
             message={this.state.message}
           ></LogIn>
         ) : (
-          <UserPage />
+          <Redirect to={path} />
         )}
       </div>
     );
@@ -67,6 +66,7 @@ const mapStateToProps = (state) => {
   return {
     loggedIn: state.loggedIn.loggedIn,
     message: state.loggedIn.message,
+    user: state.user,
   };
 };
 

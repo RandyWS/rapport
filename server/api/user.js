@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const { User, Friend, Contact } = require("../db");
-const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 
 // This is middleware that checks the JWT token in the cookie to see if it's valid
@@ -22,23 +21,6 @@ const authRequired = (req, res, next) => {
   }
   next();
 };
-
-router.get("/:userId", async (req, res, next) => {
-  try {
-    const user = await User.findByPk(req.params.userId, {
-      include: [
-        {
-          model: Friend,
-          include: [{ model: Contact }],
-        },
-      ],
-    });
-
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-});
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -91,38 +73,47 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+// This logs the user out by clearing the token cookie
+router.get("/logout", (req, res, next) => {
+  try {
+    // We just clear the token cookie to log the user out.
+
+    res.clearCookie("token", {
+      sameSite: "strict",
+      httpOnly: true,
+      signed: true,
+    });
+    res.send({
+      loggedIn: false,
+      message: "Logged Out",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // This is an authenticated route, it uses our authRequired Middleware
 // You can't see this unless you are logged in
 router.get("/authenticated/:username", authRequired, async (req, res, next) => {
-  const user = await User.findOne({
-    where: {
-      userName: req.params.username,
-    },
-    include: [
-      {
-        model: Friend,
-        include: [{ model: Contact }],
+  try {
+    const user = await User.findOne({
+      where: {
+        userName: req.params.username,
       },
-    ],
-  });
+      include: [
+        {
+          model: Friend,
+          include: [{ model: Contact }],
+        },
+      ],
+    });
 
-  res.send({
-    user,
-  });
-});
-
-// This logs the user out by clearing the token cookie
-router.get("/logout", (req, res, next) => {
-  // We just clear the token cookie to log the user out.
-  res.clearCookie("token", {
-    sameSite: "strict",
-    httpOnly: true,
-    signed: true,
-  });
-  res.send({
-    loggedIn: false,
-    message: "Logged Out",
-  });
+    res.send({
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

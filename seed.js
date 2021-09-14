@@ -15,7 +15,7 @@ const users = [
   },
   {
     userName: "IH8SKOOL",
-    password: "password",
+    password: "password1",
     firstName: "Chihiro",
     lastName: "Ogino",
     email: "Chihiro_Ogino@gmail.com",
@@ -24,7 +24,7 @@ const users = [
   },
   {
     userName: "Eboshi",
-    password: "password",
+    password: "password2",
     firstName: "Lady",
     lastName: "Eboshi",
     email: "Lady_Eboshi@gmail.com",
@@ -33,7 +33,7 @@ const users = [
   },
   {
     userName: "Cats",
-    password: "password",
+    password: "password3",
     firstName: "Cat",
     lastName: "Bus",
     email: "Cat_Bus@gmail.com",
@@ -82,39 +82,43 @@ const friends = [
 
 const contacts = [
   {
-    content: "Hello my love!",
+    title: "Hello my love!",
     date: "2021-07-08",
+    content: "looooooooooooooove",
   },
   {
-    content: "Banana",
+    title: "Banana",
     date: "2021-09-01",
+    content: "bananaaaaaaaaaaa",
   },
   {
-    content: "Apples",
+    title: "Apples",
     date: "2020-11-11",
+    content: "aaaaaappleeeeeeees",
   },
   {
-    content: "Woah",
+    title: "Woah",
     date: "2021-06-03",
   },
   {
-    content: "Cheese",
+    title: "Cheese",
+    content: "cheeeeeeeeeeeeeeeeeese",
     date: "2021-03-24",
   },
   {
-    content: "Groceries",
+    title: "Groceries",
     date: "2021-02-27",
   },
   {
-    content: "Word association",
+    title: "Word association",
     date: "2021-04-16",
   },
   {
-    content: "Mango juice",
+    title: "Mango juice",
     date: "2021-05-30",
   },
   {
-    content: "Jamba Juice",
+    title: "Jamba Juice",
     date: "2019-12-11",
   },
 ];
