@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchUser, setUser } from "../redux/user";
-import { User } from "./user";
+import User from "./user";
 import { FriendsList } from "./FriendsList";
 
 class UserPage extends Component {
@@ -9,51 +9,49 @@ class UserPage extends Component {
   constructor() {
     super();
     this.state = {
-      loading: true,
       user: {},
-      friends: [],
+      userFriends: [],
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
-
-    this.props.fetchUser().then(() => {
-      if (this._isMounted) {
-        this.setState({ loading: false });
-      }
-    });
   }
 
   componentWillUnmount() {
-    this.props.clearStudent();
+    this.props.clearUser();
     this._isMounted = false;
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.user !== this.props.user) {
-      if (this._isMounted) {
+    if (this._isMounted) {
+      if (prevProps.user !== this.props.user) {
         this.setState({
           user: this.props.user,
-          friends: this.props.user.friends,
+        });
+      }
+      if (prevProps.userFriends !== this.props.userFriends) {
+        this.setState({
+          userFriends: this.props.userFriends,
         });
       }
     }
   }
 
   render() {
-    const user = this.state.user || {};
-    const friends = this.state.friends || [];
+    const user = { ...this.props.user } || {};
+    const friends = this.state.userFriends || [];
 
     return (
       <div>
-        <User user={this.state.user} friends={this.state.friends} />
+        <div>{user.id ? <User user={user} /> : null}</div>
         {!friends.length ? (
           <h4>You have no friends!</h4>
         ) : (
+          ((<h3>Rapport with {friends.length} friends!</h3>),
           friends.map((friend) => (
             <FriendsList friend={friend} key={friend.id} />
-          ))
+          )))
         )}
       </div>
     );
@@ -63,12 +61,12 @@ class UserPage extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.user,
+    userFriends: state.userFriends,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: () => dispatch(fetchUser(1)),
     clearUser: () => dispatch(setUser({})),
   };
 };

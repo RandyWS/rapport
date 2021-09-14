@@ -1,13 +1,13 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
-export class User extends React.Component {
+export default class User extends Component {
   constructor() {
     super();
   }
 
   render() {
     const user = this.props.user;
-    const friends = this.props.friends;
 
     return (
       <div className="column">
@@ -18,7 +18,6 @@ export class User extends React.Component {
             Name: {user.firstName} {user.lastName}
           </h3>
           <h3>Email: {user.email}</h3>
-          <h3>Rapport with {friends.length} friends!</h3>
         </div>
       </div>
     );

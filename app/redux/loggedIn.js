@@ -10,14 +10,13 @@ export const logIn = (loggedIn) => {
   };
 };
 
-export const _logIn = (credentials) => {
+export const _logIn = (credentials, history) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.post(`/api/user/login`, credentials);
-
       dispatch(logIn(data));
       if (data.loggedIn === true) {
-        dispatch(_fetchUser(credentials.username));
+        dispatch(_fetchUser(credentials.username, history));
       }
     } catch (error) {
       console.log(error);

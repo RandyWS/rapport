@@ -14,11 +14,10 @@ class Home extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.loggedIn !== this.props.loggedIn) {
-      if (this._isMounted) {
-        this.setState({
-          loggedIn: true,
-        });
-      }
+      this.setState({
+        loggedIn: this.props.loggedIn,
+        message: this.props.message,
+      });
     }
   }
 
@@ -48,10 +47,17 @@ class Home extends Component {
 
   render() {
     const loggedIn = this.state.loggedIn;
+
     return (
       <div>
-        {!loggedIn ? <LogIn></LogIn> : <UserPage />}
-        <h1>{loggedIn ? "Logged In" : "Not Logged In"}</h1>
+        {!loggedIn ? (
+          <LogIn
+            history={this.props.history}
+            message={this.state.message}
+          ></LogIn>
+        ) : (
+          <UserPage />
+        )}
       </div>
     );
   }
@@ -59,7 +65,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    loggedIn: state.loggedIn,
+    loggedIn: state.loggedIn.loggedIn,
+    message: state.loggedIn.message,
   };
 };
 

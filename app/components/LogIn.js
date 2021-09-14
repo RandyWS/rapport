@@ -35,9 +35,9 @@ class LogIn extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, { history }) => {
   return {
-    logIn: (credentials) => dispatch(_logIn(credentials)),
+    logIn: (credentials) => dispatch(_logIn(credentials, history)),
   };
 };
 

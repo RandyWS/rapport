@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setUserFriends } from "./userFriends";
 
 const SET_USER = "SET_USER";
 
@@ -20,11 +21,13 @@ export const fetchUser = (userId) => {
   };
 };
 
-export const _fetchUser = (username) => {
+export const _fetchUser = (username, history) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get(`/api/user/authenticated/${username}`);
-      dispatch(setUser(data));
+      dispatch(setUser(data.user));
+      dispatch(setUserFriends(data.user.friends));
+      history.push(`/`);
     } catch (error) {
       console.log(error);
     }

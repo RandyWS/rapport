@@ -105,7 +105,6 @@ router.get("/authenticated/:username", authRequired, async (req, res, next) => {
       },
     ],
   });
-  console.log("user", user);
 
   res.send({
     user,
