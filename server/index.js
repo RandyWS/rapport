@@ -1,7 +1,9 @@
 const express = require("express");
 const path = require("path");
 const volleyball = require("volleyball");
+const cookieParser = require("cookie-parser");
 
+const cookieSecret = process.env.cookieSecret;
 const app = express();
 
 // logging middleware
@@ -12,6 +14,7 @@ app.use(volleyball.custom({ debug }));
 // body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(cookieSecret));
 
 // static middleware
 app.use(express.static(path.join(__dirname, "../public")));

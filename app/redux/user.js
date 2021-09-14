@@ -20,6 +20,17 @@ export const fetchUser = (userId) => {
   };
 };
 
+export const _fetchUser = (username) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`/api/user/authenticated/${username}`);
+      dispatch(setUser(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export default (state = {}, action) => {
   switch (action.type) {
     case SET_USER:

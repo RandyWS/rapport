@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { fetchUser, setUser } from "../redux/user";
 import { User } from "./user";
 import { FriendsList } from "./FriendsList";
-import LogIn from "./LogIn";
 
 class UserPage extends Component {
   _isMounted = false;

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { _logIn } from "../redux/loggedIn";
 
 class LogIn extends Component {
   constructor() {
@@ -15,10 +17,9 @@ class LogIn extends Component {
   }
   onSubmit(ev) {
     ev.preventDefault();
-    const { username, password } = this.state;
-    this.props.signIn({
-      username,
-      password,
+
+    this.props.logIn({
+      ...this.state,
     });
   }
   render() {
@@ -34,4 +35,10 @@ class LogIn extends Component {
   }
 }
 
-export default LogIn;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logIn: (credentials) => dispatch(_logIn(credentials)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(LogIn);
