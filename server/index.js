@@ -4,6 +4,7 @@ const volleyball = require("volleyball");
 const cookieParser = require("cookie-parser");
 
 const cookieSecret = process.env.cookieSecret;
+const secret = process.env.JWT;
 const app = express();
 
 // logging middleware

@@ -5,13 +5,16 @@ const jwt = require("jsonwebtoken");
 // This is middleware that checks the JWT token in the cookie to see if it's valid
 // if it is, we call next(), otherwise we send a 401 Unauthorized
 const secret = process.env.JWT;
-
 const authRequired = (req, res, next) => {
   // We grab the token from the cookies
   const token = req.signedCookies.token;
+
   // jwt verify throws an exception when the token isn't valid
   try {
+    console.log(jwt.verify(token, secret));
     jwt.verify(token, secret);
+
+    req.params.username = jwt.verify(token, secret).username;
   } catch (error) {
     res.status(401).send({
       loggedIn: false,
@@ -25,7 +28,7 @@ const authRequired = (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    console.log(username, password);
+
     const user = await User.findOne({
       where: {
         userName: username,
@@ -74,7 +77,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 // This logs the user out by clearing the token cookie
-router.get("/logout", (req, res, next) => {
+router.get("/logout", authRequired, (req, res, next) => {
   try {
     // We just clear the token cookie to log the user out.
 
@@ -94,6 +97,17 @@ router.get("/logout", (req, res, next) => {
 
 // This is an authenticated route, it uses our authRequired Middleware
 // You can't see this unless you are logged in
+router.get("/authenticated", authRequired, async (req, res, next) => {
+  try {
+    res.send({
+      loggedIn: true,
+      message: "user is logged in",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/authenticated/:username", authRequired, async (req, res, next) => {
   try {
     const user = await User.findOne({

@@ -1,21 +1,14 @@
 import axios from "axios";
 import { _fetchUser, setUser } from "./user";
 import { setUserFriends } from "./userFriends";
+import { setMessage } from "./authMessage";
 
-const LOG_IN = "LOG_IN";
-const LOG_OUT = "LOG_OUT";
+const SET_AUTH = "SET_AUTH";
 
-export const logIn = (loggedIn) => {
+export const setAuthentication = (authentication) => {
   return {
-    type: LOG_IN,
-    loggedIn,
-  };
-};
-
-export const logOut = (loggedIn) => {
-  return {
-    type: LOG_OUT,
-    loggedIn,
+    type: SET_AUTH,
+    authentication,
   };
 };
 
@@ -23,7 +16,8 @@ export const _logIn = (credentials, history) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.post(`/api/user/login`, credentials);
-      dispatch(logIn(data));
+      dispatch(setAuthentication(data.loggedIn));
+      dispatch(setMessage(data.message));
       if (data.loggedIn === true) {
         dispatch(_fetchUser(credentials.username, history));
       }
@@ -37,21 +31,32 @@ export const _logOut = () => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get("/api/user/logout");
-      dispatch(logOut(data));
+      dispatch(setAuthentication(data.loggedIn));
       dispatch(setUser({}));
       dispatch(setUserFriends([]));
+      dispatch(setMessage(data.message));
     } catch (error) {
       console.log(error);
     }
   };
 };
 
-export default (state = {}, action) => {
+export const authenticate = () => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get("/api/user/authenticated");
+      dispatch(setAuthentication(data.loggedIn));
+      dispatch(setMessage(data.message));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export default (state = false, action) => {
   switch (action.type) {
-    case LOG_IN:
-      return action.loggedIn;
-    case LOG_OUT:
-      return action.loggedIn;
+    case SET_AUTH:
+      return action.authentication;
     default:
       return state;
   }

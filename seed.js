@@ -1,5 +1,6 @@
 const { green, red } = require("chalk");
 const { db } = require("./server/db");
+const jwt = require("jsonwebtoken");
 
 const { User, Friend, Contact } = require("./server/db");
 
