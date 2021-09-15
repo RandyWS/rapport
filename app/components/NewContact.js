@@ -4,11 +4,15 @@ import { createContact } from "../redux/singleContact";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { _fetchUser, setUser } from "../redux/user";
 
 class NewContact extends Component {
   constructor() {
     super();
     this.state = {
+      user: {},
+      userFriends: [],
+      friend: "",
       title: "",
       date: "",
       content: "",
@@ -21,7 +25,29 @@ class NewContact extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleDate = this.handleDate.bind(this);
+    this.selectFriend = this.selectFriend.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchUser(this.props.match.params.userName);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      this.setState({
+        user: this.props.user,
+      });
+    }
+    if (prevProps.userFriends !== this.props.userFriends) {
+      this.setState({
+        userFriends: this.props.userFriends,
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.clearUser();
   }
 
   handleChange(event) {
@@ -53,6 +79,13 @@ class NewContact extends Component {
     });
   }
 
+  selectFriend(ev) {
+    ev.preventDefault();
+    this.setState({
+      friend: ev.target.value,
+    });
+  }
+
   handleSubmit(evt) {
     evt.preventDefault();
 
@@ -61,15 +94,9 @@ class NewContact extends Component {
 
   render() {
     // type checks for errors in initial rendering
-    const {
-      title,
-      date,
-      content,
-
-      errors,
-    } = this.state;
+    const { title, date, content, errors } = this.state;
     const { handleSubmit } = this;
-    console.log(date);
+    const userFriends = this.state.userFriends || [];
 
     return (
       <form id="sign-up-form" onSubmit={handleSubmit}>
@@ -99,11 +126,23 @@ class NewContact extends Component {
         <label htmlFor="date">Date:</label>
         <DatePicker
           selected={date}
-          // onSelect={this.handleDate}
           onChange={this.handleDate} //only when value has changed
         />
 
-        <button type="submit">Submit New User</button>
+        <select
+          id="dropdown"
+          value={this.state.friend}
+          onChange={this.selectFriend}
+        >
+          <option value="">Select Friend</option>
+          {userFriends.map((friend) => (
+            <option key={friend.id} value={friend.id}>
+              {friend.firstName + " " + friend.lastName}
+            </option>
+          ))}
+        </select>
+
+        <button type="submit">Submit New Message</button>
         <Link className="link" to="/">
           Cancel
         </Link>
@@ -112,10 +151,21 @@ class NewContact extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch, { history }) => {
+const mapStateToProps = (state) => {
   return {
-    createContact: (user) => dispatch(createContact(user, history)),
+    user: state.user,
+    userFriends: state.userFriends,
+    loggedIn: state.loggedIn,
+    message: state.authMessage,
   };
 };
 
-export default connect(null, mapDispatchToProps)(NewContact);
+const mapDispatchToProps = (dispatch, { history }) => {
+  return {
+    createContact: (contact) => dispatch(createContact(contact, history)),
+    fetchUser: (username) => dispatch(_fetchUser(username, history)),
+    clearUser: () => dispatch(setUser({})),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewContact);

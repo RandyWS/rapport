@@ -35,6 +35,7 @@ export const getSingleContact = (contactId) => {
 export const createContact = (contact, history) => {
   return async (dispatch) => {
     try {
+      console.log(contact);
       const { data } = await axios.post(`/api/contacts/authenticated`, contact);
       dispatch(getSingleContact(data.singleContact.id));
     } catch (error) {

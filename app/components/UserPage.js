@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setUser } from "../redux/user";
 import User from "./user";
 import { FriendsList } from "./FriendsList";
 import { Link } from "react-router-dom";
-import { _fetchUser } from "../redux/user";
+import { _fetchUser, setUser } from "../redux/user";
 import Unauthorized from "./Unauthorized";
 
 class UserPage extends Component {

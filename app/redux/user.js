@@ -12,22 +12,7 @@ export const setUser = (user) => {
   };
 };
 
-export const fetchUser = (username) => {
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.get(`/api/user/authenticated/${username}`);
-      dispatch(setAuthentication(data.loggedIn));
-      dispatch(setMessage(data.message));
-      if (data.user) {
-        dispatch(setUser(data.user));
-        const path = `/user/${data.user.userName}/calendar`;
-        history.push(path);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
+const routeToCalendar = () => {};
 
 export const _fetchUser = (username, history) => {
   return async (dispatch) => {
@@ -38,8 +23,6 @@ export const _fetchUser = (username, history) => {
       if (data.user) {
         dispatch(setUser(data.user));
         dispatch(setUserFriends(data.user.friends));
-        const path = `/user/${data.user.userName}`;
-        history.push(path);
       }
     } catch (error) {
       console.log(error);

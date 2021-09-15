@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { resetContacts, getContacts } from "../redux/contacts";
-import { fetchUser } from "../redux/user";
+import { _fetchUser } from "../redux/user";
 import { connect } from "react-redux";
 import Unauthorized from "./Unauthorized";
 
@@ -79,7 +79,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getContacts: (userId) => dispatch(getContacts(userId)),
     resetContacts: () => dispatch(resetContacts()),
-    fetchUser: (username) => dispatch(fetchUser(username)),
+    fetchUser: (username) => dispatch(_fetchUser(username)),
   };
 };
 

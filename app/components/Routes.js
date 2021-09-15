@@ -33,7 +33,7 @@ const Routes = () => {
             <Route exact path="/user/:userName/calendar" component={Calendar} />
             <Route
               exact
-              path="/user/:userName/newContact"
+              path="/user/:userName/addMessage"
               component={NewContact}
             />
             <Route

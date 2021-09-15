@@ -20,6 +20,8 @@ export const _logIn = (credentials, history) => {
       dispatch(setMessage(data.message));
       if (data.loggedIn === true) {
         dispatch(_fetchUser(credentials.username, history));
+        const path = `/user/${credentials.username}`;
+        history.push(path);
       }
     } catch (error) {
       console.log(error);

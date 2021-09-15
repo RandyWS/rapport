@@ -25,6 +25,8 @@ const authRequired = (req, res, next) => {
 router.post("/authenticated", authRequired, async (req, res, next) => {
   try {
     const singleContact = await Contact.create(req.body);
+    await singleContact.setUser(req.body.user.id);
+    await singleContact.setFriend(req.body.friend);
 
     res.send({
       loggedIn: true,

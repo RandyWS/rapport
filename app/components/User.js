@@ -1,7 +1,11 @@
 import React from "react";
 
 const User = (props) => {
-  const user = this.props.user;
+  if (!props.user) {
+    return null;
+  }
+
+  const user = props.user;
   return (
     <div className="column">
       <img src={user.imageUrl} />
