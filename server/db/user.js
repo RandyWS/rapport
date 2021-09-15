@@ -58,10 +58,10 @@ User.prototype.correctPassword = function (candidatePwd) {
   return bcrypt.compare(candidatePwd, this.password);
 };
 
-User.prototype.generateToken = function () {
-  console.log(this.userName, process.env.JWT);
-  return jwt.sign({ username: this.userName }, secret);
-};
+// User.prototype.generateToken = function () {
+//   console.log(this.userName, process.env.JWT);
+//   return jwt.sign({ username: this.userName }, secret);
+// };
 
 // User.authenticate = async function ({ username, password }) {
 //   const user = await this.findOne({ where: { username } });

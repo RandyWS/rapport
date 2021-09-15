@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Contact } = require("../db");
+const { User, Contact, Friend } = require("../db");
 const jwt = require("jsonwebtoken");
 
 // This is middleware that checks the JWT token in the cookie to see if it's valid
@@ -22,20 +22,62 @@ const authRequired = (req, res, next) => {
   next();
 };
 
-router.get("/authenticated/:userId", authRequired, async (req, res, next) => {
+router.post("/authenticated", authRequired, async (req, res, next) => {
   try {
-    const contacts = await Contact.findAll({
-      where: {
-        userId: req.params.userId,
-      },
-    });
+    const singleContact = await Contact.create(req.body);
 
     res.send({
-      contacts,
+      loggedIn: true,
+      message: "Successfully Logged In",
+      singleContact,
     });
   } catch (error) {
+    if (error.username === "SequelizeUniqueConstraintError") {
+      res.status(401).send("User already exists");
+    }
+
     next(error);
   }
 });
+
+router.get(
+  "/authenticated/byUserId/:userId",
+  authRequired,
+  async (req, res, next) => {
+    try {
+      const contacts = await Contact.findAll({
+        where: {
+          userId: req.params.userId,
+        },
+      });
+
+      res.send({
+        contacts,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get(
+  "/authenticated/byContactId/:contactId",
+  authRequired,
+  async (req, res, next) => {
+    try {
+      const singleContact = await Contact.findByPk(req.params.contactId, {
+        include: {
+          model: Friend,
+        },
+      });
+
+      res.send({
+        singleContact,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;

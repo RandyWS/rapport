@@ -1,22 +1,16 @@
-import React, { Component } from "react";
+import React from "react";
 
-export class FriendsList extends React.Component {
-  constructor() {
-    super();
-  }
+export const FriendsList = (props) => {
+  const friend = props.friend;
 
-  render() {
-    const friend = this.props.friend;
-
-    return (
-      <div className="column">
-        <img src={friend.imageUrl} />
-        <div className="row">
-          <h3>
-            Name: {friend.firstName} {friend.lastName}
-          </h3>
-        </div>
+  return (
+    <div className="column">
+      <img src={friend.imageUrl} />
+      <div className="row">
+        <h3>
+          Name: {friend.firstName} {friend.lastName}
+        </h3>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};

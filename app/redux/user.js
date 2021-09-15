@@ -1,5 +1,7 @@
 import axios from "axios";
 import { setUserFriends } from "./userFriends";
+import { setAuthentication } from "./loggedIn";
+import { setMessage } from "./authMessage";
 
 const SET_USER = "SET_USER";
 
@@ -14,7 +16,13 @@ export const fetchUser = (username) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get(`/api/user/authenticated/${username}`);
-      dispatch(setUser(data.user));
+      dispatch(setAuthentication(data.loggedIn));
+      dispatch(setMessage(data.message));
+      if (data.user) {
+        dispatch(setUser(data.user));
+        const path = `/user/${data.user.userName}/calendar`;
+        history.push(path);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -25,8 +33,25 @@ export const _fetchUser = (username, history) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get(`/api/user/authenticated/${username}`);
+      dispatch(setAuthentication(data.loggedIn));
+      dispatch(setMessage(data.message));
+      if (data.user) {
+        dispatch(setUser(data.user));
+        dispatch(setUserFriends(data.user.friends));
+        const path = `/user/${data.user.userName}`;
+        history.push(path);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const createUser = (newUser, history) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post(`/api/user/signup`, newUser);
       dispatch(setUser(data.user));
-      dispatch(setUserFriends(data.user.friends));
       const path = `/user/${data.user.userName}`;
       history.push(path);
     } catch (error) {

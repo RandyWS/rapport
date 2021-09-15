@@ -14,15 +14,15 @@ const authRequired = (req, res, next) => {
     console.log(jwt.verify(token, secret));
     jwt.verify(token, secret);
 
-    req.params.username = jwt.verify(token, secret).username;
+    req.username = jwt.verify(token, secret).username;
+    next();
   } catch (error) {
-    res.status(401).send({
+    res.send({
       loggedIn: false,
       message: "Unauthorized",
     });
-    return;
+    // return;
   }
-  next();
 };
 
 router.post("/login", async (req, res, next) => {
@@ -76,6 +76,38 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+router.post("/signup", async (req, res, next) => {
+  try {
+    const { userName } = req.body;
+    const user = await User.create(req.body);
+    res.cookie(
+      "token",
+      jwt.sign(
+        {
+          userName,
+        },
+        secret
+      ),
+      {
+        sameSite: "strict",
+        httpOnly: true,
+        signed: true,
+      }
+    );
+    res.send({
+      loggedIn: true,
+      message: "Successfully Logged In",
+      user,
+    });
+  } catch (error) {
+    if (error.username === "SequelizeUniqueConstraintError") {
+      res.status(401).send("User already exists");
+    }
+
+    next(error);
+  }
+});
+
 // This logs the user out by clearing the token cookie
 router.get("/logout", authRequired, (req, res, next) => {
   try {
@@ -110,6 +142,12 @@ router.get("/authenticated", authRequired, async (req, res, next) => {
 
 router.get("/authenticated/:username", authRequired, async (req, res, next) => {
   try {
+    if (req.username !== req.params.username) {
+      res.send({
+        loggedIn: false,
+        message: "Unauthorized",
+      });
+    }
     const user = await User.findOne({
       where: {
         userName: req.params.username,
@@ -124,6 +162,8 @@ router.get("/authenticated/:username", authRequired, async (req, res, next) => {
 
     res.send({
       user,
+      loggedIn: true,
+      message: "user is logged in",
     });
   } catch (error) {
     next(error);

@@ -5,6 +5,7 @@ import User from "./user";
 import { FriendsList } from "./FriendsList";
 import { Link } from "react-router-dom";
 import { _fetchUser } from "../redux/user";
+import Unauthorized from "./Unauthorized";
 
 class UserPage extends Component {
   constructor() {
@@ -37,6 +38,9 @@ class UserPage extends Component {
   }
 
   render() {
+    if (this.props.message === "Unauthorized") {
+      return <Unauthorized />;
+    }
     const user = { ...this.props.user } || {};
     const friends = this.state.userFriends || [];
     const path = `/user/${this.props.match.params.userName}/calendar`;
@@ -63,6 +67,7 @@ const mapStateToProps = (state) => {
     user: state.user,
     userFriends: state.userFriends,
     loggedIn: state.loggedIn,
+    message: state.authMessage,
   };
 };
 

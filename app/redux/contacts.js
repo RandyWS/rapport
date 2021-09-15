@@ -20,7 +20,9 @@ export const resetContacts = () => {
 export const getContacts = (userId) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/contacts/authenticated/${userId}`);
+      const { data } = await axios.get(
+        `/api/contacts/authenticated/byUserId/${userId}`
+      );
       dispatch(setContacts(data.contacts));
     } catch (error) {
       console.log(error);
@@ -31,6 +33,8 @@ export const getContacts = (userId) => {
 export default (state = [], action) => {
   switch (action.type) {
     case SET_CONTACTS:
+      return action.contacts;
+    case RESET_CONTACTS:
       return action.contacts;
     default:
       return state;
