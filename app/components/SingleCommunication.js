@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { resetSingleContact, getSingleContact } from "../redux/singleContact";
 import { FriendsList } from "./FriendsList";
-import { Contact } from "./Contact";
+import { Communication } from "./Communication";
 
-class SingleContact extends Component {
+class SingleCommunication extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +51,7 @@ class SingleContact extends Component {
 
     return (
       <div className="column">
-        <Contact singleContact={singleContact} />
+        <Communication singleContact={singleContact} />
         <FriendsList friend={singleFriend} />
       </div>
     );
@@ -73,4 +73,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SingleContact);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SingleCommunication);

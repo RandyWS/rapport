@@ -19,6 +19,9 @@ const Friend = db.define("friend", {
   lastName: {
     type: Sequelize.STRING,
   },
+  descripton: {
+    type: Sequelize.TEXT,
+  },
   imageUrl: {
     type: Sequelize.TEXT,
     defaultValue:

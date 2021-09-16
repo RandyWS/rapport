@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Contact = (props) => {
+export const Communication = (props) => {
   const singleContact = props.singleContact;
 
   return (

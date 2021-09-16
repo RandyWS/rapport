@@ -7,8 +7,9 @@ import Home from "./Home";
 import Calendar from "./Calendar";
 import UserPage from "./UserPage";
 import SignUp from "./SignUp";
-import SingleContact from "./SingleContact";
-import NewContact from "./NewContact";
+import SingleCommunication from "./SingleCommunication";
+import AddFriend from "./AddFriend";
+import NewCommunication from "./NewCommunication";
 import { authenticate } from "../redux/loggedIn";
 
 const Routes = () => {
@@ -34,12 +35,17 @@ const Routes = () => {
             <Route
               exact
               path="/user/:userName/addMessage"
-              component={NewContact}
+              component={NewCommunication}
+            />
+            <Route
+              exact
+              path="/user/:userName/addFriend"
+              component={AddFriend}
             />
             <Route
               exact
               path="/user/:userName/:contactId"
-              component={SingleContact}
+              component={SingleCommunication}
             />
           </Switch>
         </main>

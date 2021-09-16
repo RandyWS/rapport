@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Contact } = require("../db");
+const { User, Contact, Friend } = require("../db");
 const jwt = require("jsonwebtoken");
 
 // This is middleware that checks the JWT token in the cookie to see if it's valid
@@ -27,6 +27,22 @@ router.get("/authenticated/:friendId", authRequired, async (req, res, next) => {
     const singleFriend = await Friend.findByPk(req.params.friendId);
 
     res.send({
+      singleFriend,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/authenticated", authRequired, async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const singleFriend = await Friend.create(req.body);
+    await singleFriend.setUser(req.body.user.id);
+
+    res.send({
+      loggedIn: true,
+      message: "Successfully Logged In",
       singleFriend,
     });
   } catch (error) {

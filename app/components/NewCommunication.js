@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { _fetchUser, setUser } from "../redux/user";
 
-class NewContact extends Component {
+class NewCommunication extends Component {
   constructor() {
     super();
     this.state = {
@@ -168,4 +168,4 @@ const mapDispatchToProps = (dispatch, { history }) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewContact);
+export default connect(mapStateToProps, mapDispatchToProps)(NewCommunication);

@@ -17,6 +17,19 @@ export const resetSingleFriend = (singleFriend) => {
   };
 };
 
+export const _createFriend = (friend, history) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post(`/api/friends/authenticated`, friend);
+      dispatch(setSingleFriend(data.singleFriend));
+      const path = `/user/${friend.user.userName}`;
+      history.push(path);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export default (state = {}, action) => {
   switch (action.type) {
     case SET_SINGLE_FRIEND:
