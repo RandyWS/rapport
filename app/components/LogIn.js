@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { _logIn } from "../redux/loggedIn";
+import { setIsLoading } from "../redux/isLoading";
 
 class LogIn extends Component {
   constructor() {
@@ -12,16 +13,21 @@ class LogIn extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
+
   onChange(ev) {
     this.setState({ [ev.target.name]: ev.target.value });
   }
+
   onSubmit(ev) {
     ev.preventDefault();
 
     this.props.logIn({
       ...this.state,
     });
+
+    this.props.setIsLoading(true);
   }
+
   render() {
     const { onChange, onSubmit } = this;
     const { username, password } = this.state;
@@ -38,6 +44,7 @@ class LogIn extends Component {
 const mapDispatchToProps = (dispatch, { history }) => {
   return {
     logIn: (credentials) => dispatch(_logIn(credentials, history)),
+    setIsLoading: (bool) => dispatch(setIsLoading(bool)),
   };
 };
 

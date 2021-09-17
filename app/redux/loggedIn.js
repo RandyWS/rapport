@@ -15,13 +15,14 @@ export const setAuthentication = (authentication) => {
 export const _logIn = (credentials, history) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.post(`/api/user/login`, credentials);
+      const { data } = await axios.post(`/api/user/login`, credentials, {
+        withCredentials: true,
+      });
       dispatch(setAuthentication(data.loggedIn));
       dispatch(setMessage(data.message));
       if (data.loggedIn === true) {
-        dispatch(_fetchUser(credentials.username, history));
-        const path = `/user/${credentials.username}`;
-        history.push(path);
+        dispatch(_fetchUser());
+        history.push("/home");
       }
     } catch (error) {
       console.log(error);
@@ -29,7 +30,7 @@ export const _logIn = (credentials, history) => {
   };
 };
 
-export const _logOut = () => {
+export const _logOut = (history) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.get("/api/user/logout");

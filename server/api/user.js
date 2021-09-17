@@ -1,27 +1,43 @@
 const router = require("express").Router();
 const { User, Friend, Contact } = require("../db");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 
 // This is middleware that checks the JWT token in the cookie to see if it's valid
 // if it is, we call next(), otherwise we send a 401 Unauthorized
 const secret = process.env.JWT;
-const authRequired = (req, res, next) => {
+const generateToken = (res, userId, username) => {
+  const token = jwt.sign({ userId, username }, secret);
+  return res.cookie("token", token, {
+    secure: false, // set to true if your using https
+    httpOnly: true,
+    sameSite: "strict",
+    httpOnly: true,
+    signed: true,
+  });
+};
+
+const authRequired = async (req, res, next) => {
   // We grab the token from the cookies
-  const token = req.signedCookies.token;
+  const token = req.signedCookies.token || "";
 
   // jwt verify throws an exception when the token isn't valid
   try {
-    console.log(jwt.verify(token, secret));
-    jwt.verify(token, secret);
+    if (!token) {
+      return res.status(401).send("Please log in");
+    }
+    const decrypt = await jwt.verify(token, secret);
+    req.user = {
+      userId: decrypt.userId,
+      username: decrypt.username,
+    };
 
-    req.username = jwt.verify(token, secret).username;
     next();
   } catch (error) {
     res.send({
       loggedIn: false,
       message: "Unauthorized",
     });
-    // return;
   }
 };
 
@@ -39,22 +55,8 @@ router.post("/login", async (req, res, next) => {
     if (user) {
       // and they inputted the correct password
       if (await user.correctPassword(password)) {
-        // We sign a JWT and store it in a cookie on the response.
-        // The browser will store it and send it back down
-        res.cookie(
-          "token",
-          jwt.sign(
-            {
-              username,
-            },
-            secret
-          ),
-          {
-            sameSite: "strict",
-            httpOnly: true,
-            signed: true,
-          }
-        );
+        await generateToken(res, user.id, username);
+
         res.send({
           loggedIn: true,
           message: "Successfully Logged In",
@@ -80,20 +82,9 @@ router.post("/signup", async (req, res, next) => {
   try {
     const { userName } = req.body;
     const user = await User.create(req.body);
-    res.cookie(
-      "token",
-      jwt.sign(
-        {
-          userName,
-        },
-        secret
-      ),
-      {
-        sameSite: "strict",
-        httpOnly: true,
-        signed: true,
-      }
-    );
+
+    await generateToken(res, user.id, userName);
+
     res.send({
       loggedIn: true,
       message: "Successfully Logged In",
@@ -131,39 +122,27 @@ router.get("/logout", authRequired, (req, res, next) => {
 // You can't see this unless you are logged in
 router.get("/authenticated", authRequired, async (req, res, next) => {
   try {
-    res.send({
-      loggedIn: true,
-      message: "user is logged in",
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+    let user;
 
-router.get("/authenticated/:username", authRequired, async (req, res, next) => {
-  try {
-    if (req.username !== req.params.username) {
-      res.send({
-        loggedIn: false,
-        message: "Unauthorized",
+    if (req.signedCookies.token) {
+      const token = req.signedCookies.token;
+      const decoded = await promisify(jwt.verify)(token, secret);
+
+      user = await User.findByPk(decoded.userId, {
+        include: [
+          {
+            model: Friend,
+            include: [{ model: Contact }],
+          },
+        ],
       });
+    } else {
+      user = null;
     }
-    const user = await User.findOne({
-      where: {
-        userName: req.params.username,
-      },
-      include: [
-        {
-          model: Friend,
-          include: [{ model: Contact }],
-        },
-      ],
-    });
-
     res.send({
-      user,
       loggedIn: true,
       message: "user is logged in",
+      user,
     });
   } catch (error) {
     next(error);

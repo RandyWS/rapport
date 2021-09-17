@@ -6,6 +6,7 @@ import contacts from "./contacts";
 import authMessage from "./authMessage";
 import singleContact from "./singleContact";
 import singleFriend from "./userSingleFriend";
+import isLoading from "./isLoading";
 
 const appReducer = combineReducers({
   user,
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
   authMessage,
   singleContact,
   singleFriend,
+  isLoading,
 });
 
 export default appReducer;

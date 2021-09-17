@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const volleyball = require("volleyball");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const cookieSecret = process.env.cookieSecret;
 const secret = process.env.JWT;
@@ -16,6 +17,12 @@ app.use(volleyball.custom({ debug }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(cookieSecret));
+app.use(
+  cors({
+    origin: [`${process.env.FRONT_URL}`, "http://localhost:3000"],
+    credentials: true,
+  })
+);
 
 // static middleware
 app.use(express.static(path.join(__dirname, "../public")));

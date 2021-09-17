@@ -14,7 +14,7 @@ class Navbar extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.loggedIn !== this.props.loggedIn) {
-      this.setState({ loggedIn: this.props.loggedIn.loggedIn });
+      this.setState({ loggedIn: this.props.loggedIn });
     }
   }
 
@@ -24,6 +24,7 @@ class Navbar extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <nav>
         <Link to="/">
@@ -47,9 +48,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, { history }) => {
   return {
-    logOut: () => dispatch(_logOut()),
+    logOut: () => dispatch(_logOut(history)),
   };
 };
 

@@ -22,8 +22,7 @@ export const _createFriend = (friend, history) => {
     try {
       const { data } = await axios.post(`/api/friends/authenticated`, friend);
       dispatch(setSingleFriend(data.singleFriend));
-      const path = `/user/${friend.user.userName}`;
-      history.push(path);
+      history.push("/home");
     } catch (error) {
       console.log(error);
     }

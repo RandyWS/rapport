@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const SET_MESSAGE = "SET_MESSAGE";
 
 export const setMessage = (message) => {

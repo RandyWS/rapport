@@ -16,7 +16,7 @@ class UserPage extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchUser(this.props.match.params.userName);
+    this.props.fetchUser();
   }
 
   componentWillUnmount() {
@@ -40,13 +40,13 @@ class UserPage extends Component {
     if (this.props.message === "Unauthorized") {
       return <Unauthorized />;
     }
+
     const user = { ...this.props.user } || {};
     const friends = this.state.userFriends || [];
-    const path = `/user/${this.props.match.params.userName}/calendar`;
 
     return (
       <div>
-        <Link to={path}>Go to Calendar</Link>
+        <Link to="calendar">Go to Calendar</Link>
         <div>{user.id ? <User user={user} /> : null}</div>
         {!friends.length ? (
           <h4>You have no friends!</h4>

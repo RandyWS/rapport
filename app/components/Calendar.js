@@ -44,7 +44,7 @@ class Calendar extends Component {
 
   eventClickHandler(ev) {
     // here we return the component for the event page
-    const route = `/user/${this.props.match.params.userName}/${ev.event.id}`;
+    const route = `/calendar/${ev.event.id}`;
     this.props.history.push(route);
   }
 

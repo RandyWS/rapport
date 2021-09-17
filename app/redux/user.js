@@ -12,12 +12,10 @@ export const setUser = (user) => {
   };
 };
 
-const routeToCalendar = () => {};
-
-export const _fetchUser = (username, history) => {
+export const _fetchUser = () => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`/api/user/authenticated/${username}`);
+      const { data } = await axios.get(`/api/user/authenticated`);
       dispatch(setAuthentication(data.loggedIn));
       dispatch(setMessage(data.message));
       if (data.user) {
